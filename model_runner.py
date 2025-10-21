@@ -13,8 +13,6 @@ def predict_from_db():
         import pandas as pd
         import numpy as np
         import tensorflow as tf
-        
-        from tensorflow.keras import layers, models
         from sklearn.preprocessing import MinMaxScaler
         
         
@@ -30,7 +28,7 @@ def predict_from_db():
         
         logger.info("Loading model...")
         
-        model = models.load_model(model_path, compile=False)
+        model = tf.keras.models.load_model(model_path, compile=False)
         logger.info("Model loaded successfully")
         
         
