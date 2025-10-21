@@ -15,6 +15,8 @@ const char* ssid = "AirFiber-Ayushman";
 const char* password = "12341234@";
 
 unsigned long lastSwitchTime = 0;
+unsigned long lastDataPushTime = 0;
+const unsigned long dataPushInterval = 600000; // 10 minutes in milliseconds
 int page = 1;
 
 void setup() {
@@ -99,12 +101,12 @@ void loop() {
   Serial.println("----------------------------\n");
 
   // -----------------------------
-  // Send data to remote server
+  // Send data to remote server (every 10 minutes)
   // -----------------------------
-  if(WiFi.status() == WL_CONNECTED){
+  if(WiFi.status() == WL_CONNECTED && (millis() - lastDataPushTime >= dataPushInterval)){
     HTTPClient http;
-    http.begin("http://192.168.31.121:3007/update"); // Local Flask server
- // your endpoint
+    http.begin("https://server.uemcseaiml.org/aqi-predictor/update");
+    // your endpoint
     http.addHeader("Content-Type", "application/json");
 
     // Build JSON payload with only the keys your backend expects
@@ -123,8 +125,12 @@ void loop() {
     int httpResponseCode = http.POST(payload);
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
+    Serial.println("Data pushed to server at: " + String(millis()/1000) + " seconds");
 
     http.end();
+    
+    // Update the last push time
+    lastDataPushTime = millis();
   }
 
   // -----------------------------
@@ -204,5 +210,5 @@ void loop() {
       break;
   }
 
-  delay(5000);
+  delay(1000); // Short delay for responsive LCD updates
 }
