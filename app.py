@@ -124,4 +124,4 @@ def home():
 
 if __name__ == '__main__':
     logger.info("Starting Flask app")
-    app.run(host='0.0.0.0', port=3007, debug=True)
+    app.run(host='0.0.0.0', port=8006, debug=True)
